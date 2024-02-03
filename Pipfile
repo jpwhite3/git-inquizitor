@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+gitpython = "*"
+tqdm = "*"
+jinja2 = "*"
+jinja2-humanize-extension = "*"
+matplotlib = "*"
+
+[dev-packages]
+ipykernel = "*"
+memory-profiler = "*"
+ipython = "*"
