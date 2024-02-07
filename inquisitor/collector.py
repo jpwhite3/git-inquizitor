@@ -6,6 +6,9 @@ from git import Repo, Commit
 from datetime import datetime
 import getpass
 from .report import JsonReportAdapter, ReportAdapter
+from . import __version__
+import pickle
+import zipfile
 
 
 class GitDataCollector:
@@ -18,6 +21,7 @@ class GitDataCollector:
         self.data = {
             "metadata": {
                 "collector": {
+                    "inquisitor_version": __version__,
                     "date_collected": datetime.now(),
                     "user": getpass.getuser(),
                     "hostname": platform.node(),
@@ -39,28 +43,29 @@ class GitDataCollector:
                     },
                 },
             },
-            "by_contributor": {},
-            "by_file": {},
+            "contributors": {},
+            "files": {},
             "history": [],
         }
         self._collect()
         self.report_adapter = report_adapter(self.data)
 
     def _collect(self) -> None:
-        self._collect_blame_data_by_file()
-        commits = list(self.repo.iter_commits("HEAD", reverse=True))
-        for commit in tqdm(commits, desc="Processing Commits", leave=False):
-            self._collect_commit_data(commit)
-        self._collect_active_line_count_by_contributor()
+        if self.cache_exists():
+            self._load_data(self._get_cache_file())
+        else:
+            self._collect_blame_data_by_file()
+            commits = list(self.repo.iter_commits("HEAD", reverse=True))
+            for commit in tqdm(commits, desc="Processing Commits", leave=False):
+                self._collect_commit_data(commit)
+            self._collect_active_line_count_by_contributor()
 
     def _collect_active_line_count_by_contributor(self) -> None:
-        for contributor in self.data["by_contributor"]:
-            self.data["by_contributor"][contributor]["active_lines"] = sum(
+        for contributor in self.data["contributors"]:
+            self.data["contributors"][contributor]["active_lines"] = sum(
                 [
-                    self.data["by_file"][file]["lines_by_contributor"].get(
-                        contributor, 0
-                    )
-                    for file in self.data["by_file"]
+                    self.data["files"][file]["lines_by_contributor"].get(contributor, 0)
+                    for file in self.data["files"]
                 ]
             )
 
@@ -71,22 +76,22 @@ class GitDataCollector:
     def _collect_commit_data_by_contributor(self, commit: Commit) -> None:
         contributor = commit.committer.name
         email = commit.committer.email
-        if contributor not in self.data["by_contributor"]:
-            self.data["by_contributor"][contributor] = {
+        if contributor not in self.data["contributors"]:
+            self.data["contributors"][contributor] = {
                 "identities": [email],
                 "commit_count": 0,
                 "insertions": 0,
                 "deletions": 0,
                 "active_lines": 0,
             }
-        if email not in self.data["by_contributor"][contributor]["identities"]:
-            self.data["by_contributor"][contributor]["identities"].append(email)
+        if email not in self.data["contributors"][contributor]["identities"]:
+            self.data["contributors"][contributor]["identities"].append(email)
 
-        self.data["by_contributor"][contributor]["commit_count"] += 1
-        self.data["by_contributor"][contributor]["insertions"] += commit.stats.total[
+        self.data["contributors"][contributor]["commit_count"] += 1
+        self.data["contributors"][contributor]["insertions"] += commit.stats.total[
             "insertions"
         ]
-        self.data["by_contributor"][contributor]["deletions"] += commit.stats.total[
+        self.data["contributors"][contributor]["deletions"] += commit.stats.total[
             "deletions"
         ]
 
@@ -108,8 +113,8 @@ class GitDataCollector:
         for file_path in tqdm(
             self.repo.git.ls_files().split("\n"), desc="Processing Files", leave=False
         ):
-            if file_path not in self.data["by_file"]:
-                self.data["by_file"][file_path] = self._get_blame_for_file(file_path)
+            if file_path not in self.data["files"]:
+                self.data["files"][file_path] = self._get_blame_for_file(file_path)
 
     def _get_blame_for_file(self, file_path: Path) -> dict:
         lines_by_contributor = {}
@@ -151,6 +156,32 @@ class GitDataCollector:
             else None,
             "lines_by_contributor": lines_by_contributor,
         }
+
+    def cache_data(self) -> None:
+        if not self.cache_exists():
+            self._save_data(self._get_cache_file())
+
+    def _save_data(self, output_file: Path) -> None:
+        data_bytes = pickle.dumps(self.data)
+        if not output_file.parent.exists():
+            output_file.parent.mkdir(parents=True, exist_ok=True)
+        with zipfile.ZipFile(output_file, "w") as zipf:
+            zipf.writestr("data.pickle", data_bytes)
+
+    def _load_data(self, input_file: Path) -> None:
+        with zipfile.ZipFile(input_file, "r") as zipf:
+            data_bytes = zipf.read("data.pickle")
+        self.data = pickle.loads(data_bytes)
+
+    def cache_exists(self) -> bool:
+        return self._get_cache_file().exists()
+
+    def _get_cache_file(self) -> Path:
+        return (
+            Path(self.repo_path)
+            .joinpath(".inquisitor", "cache")
+            .joinpath(self.commit.hexsha + ".zip")
+        )
 
     def write_report(self, output_file: Path) -> None:
         self.report_adapter.write(output_file)

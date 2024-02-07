@@ -9,8 +9,8 @@ tqdm = "*"
 jinja2 = "*"
 jinja2-humanize-extension = "*"
 matplotlib = "*"
+click = "*"
 
 [dev-packages]
-ipykernel = "*"
 memory-profiler = "*"
 ipython = "*"

@@ -30,21 +30,21 @@ class HtmlReportAdapter(ReportAdapter):
         self.raw_data["history"].sort(key=lambda x: x["date"], reverse=True)
         self.chart_data = {
             "commits_by_author": pie_chart(
-                self.raw_data["by_contributor"].keys(),
+                self.raw_data["contributors"].keys(),
                 list(
                     map(
                         lambda x: x["commit_count"],
-                        self.raw_data["by_contributor"].values(),
+                        self.raw_data["contributors"].values(),
                     )
                 ),
                 title="Commits by Author",
             ),
             "changes_by_author": pie_chart(
-                self.raw_data["by_contributor"].keys(),
+                self.raw_data["contributors"].keys(),
                 list(
                     map(
                         lambda x: x["insertions"] + x["deletions"],
-                        self.raw_data["by_contributor"].values(),
+                        self.raw_data["contributors"].values(),
                     )
                 ),
                 title="Line changes by Author",
