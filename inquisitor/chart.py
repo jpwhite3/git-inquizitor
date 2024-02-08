@@ -6,7 +6,6 @@ from datetime import datetime
 from typing import List
 
 import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
 
 warnings.filterwarnings("ignore")
 plt.rcParams["figure.autolayout"] = True

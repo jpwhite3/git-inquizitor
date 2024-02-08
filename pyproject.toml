@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "git-inquizitor"
+name = "git-inquisitor"
 version = "0.1.0"
 description = "Git Inquizitor is an analysis and reporting tool for git repositories."
 authors = ["JP White <jpwhite3@gmail.com>"]
@@ -21,7 +21,12 @@ pytest = "^8.0.0"
 pytest-cov = "^4.1.0"
 memory-profiler = "^0.61.0"
 ipdb = "^0.13.13"
+faker = "^23.1.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+git-inquisitor = "inquisitor"
+
