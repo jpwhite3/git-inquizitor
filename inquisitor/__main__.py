@@ -12,7 +12,7 @@ def inquisitor():
 
 @inquisitor.command()
 @click.argument("repo-path", type=click.Path(exists=True))
-def collect(repo_path, disable_cache):
+def collect(repo_path):
     collector = GitDataCollector(repo_path)
     collector.cache_data()
 
