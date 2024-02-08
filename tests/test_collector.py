@@ -3,7 +3,10 @@ from datetime import datetime
 from pathlib import Path
 from unittest.mock import MagicMock
 
+from git import Commit, Repo
+
 from inquisitor.collector import GitDataCollector
+from inquisitor.report import ReportAdapter
 
 
 class TestGitDataCollector(unittest.TestCase):
@@ -13,10 +16,10 @@ class TestGitDataCollector(unittest.TestCase):
 
     def test_init(self):
         self.assertEqual(self.collector.repo_path, self.repo_path)
-        self.assertIsInstance(self.collector.repo, MagicMock)
-        self.assertIsInstance(self.collector.commit, MagicMock)
+        self.assertIsInstance(self.collector.repo, Repo)
+        self.assertIsInstance(self.collector.commit, Commit)
         self.assertIsInstance(self.collector.data, dict)
-        self.assertIsInstance(self.collector.report_adapter, MagicMock)
+        self.assertIsInstance(self.collector.report_adapter, ReportAdapter)
 
     def test_collect_active_line_count_by_contributor(self):
         # Mock the data
