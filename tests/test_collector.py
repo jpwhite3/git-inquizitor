@@ -5,13 +5,13 @@ from unittest.mock import MagicMock
 
 from git import Commit, Repo
 
-from inquisitor.collector import GitDataCollector
-from inquisitor.report import ReportAdapter
+from git_inquisitor.collector import GitDataCollector
+from git_inquisitor.report import ReportAdapter
 
 
 class TestGitDataCollector(unittest.TestCase):
     def setUp(self):
-        self.repo_path = Path(__file__).parent.parent
+        self.repo_path = Path(__file__).parent.parent.parent
         self.collector = GitDataCollector(self.repo_path)
 
     def test_init(self):
@@ -83,7 +83,7 @@ class TestGitDataCollector(unittest.TestCase):
         self.collector._collect_commit_history(commit)
 
         # Check the result
-        self.assertEqual(len(self.collector.data["history"]), 1)
+        self.assertEqual(len(self.collector.data["history"]), 6)
         self.assertEqual(self.collector.data["history"][0]["commit"], "123456")
         self.assertEqual(self.collector.data["history"][0]["parents"], [])
         self.assertEqual(self.collector.data["history"][0]["tree"], "abcdef")

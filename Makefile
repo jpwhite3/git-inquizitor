@@ -32,14 +32,15 @@ clean-pyc: ## remove Python file artifacts
 	- find . -name '__pycache__' -exec rm -fr {} +
 
 clean-test: ## remove test and coverage artifacts
-	rm -f .coverage
+	rm -f .coverage*
 	rm -fr htmlcov/
+	rm -rf .pytest_cache
 
 test: ## run tests quickly with the default Python
-	poetry run py.test tests --cov=inquisitor --cov-report=term-missing
+	poetry run python -m pytest src/tests --cov=src/git_inquisitor --cov-report=term-missing
 
 test-debug: ## run tests quickly with the default Python
-	poetry run py.test tests --pdb
+	poetry run python -m pytest src/tests src/tests --pdb
 
 release: clean ## package and upload a release
 	poetry publish --build

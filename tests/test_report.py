@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-from inquisitor.report import ReportAdapter
+from git_inquisitor.report import ReportAdapter
 
 
 class TestReportAdapter(unittest.TestCase):
@@ -20,7 +20,7 @@ class TestReportAdapter(unittest.TestCase):
 
         # Add your assertions here
 
-    @patch("inquisitor.report.Path")
+    @patch("git_inquisitor.report.Path")
     def test_write(self, mock_path):
         # Mock the raw data
         self.adapter.raw_data = {
@@ -32,7 +32,7 @@ class TestReportAdapter(unittest.TestCase):
         mock_path.return_value = output_file
 
         # Call the write method
-        with patch("inquisitor.report.ReportAdapter.write") as mock_write:
+        with patch("git_inquisitor.report.ReportAdapter.write") as mock_write:
             self.adapter.write(output_file)
             mock_write.assert_called_once_with(output_file)
 

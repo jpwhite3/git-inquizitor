@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime
 
-from inquisitor.chart import change_graph
+from git_inquisitor.chart import change_graph
 
 
 class TestChangeGraph(unittest.TestCase):
