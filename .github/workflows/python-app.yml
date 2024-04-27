@@ -17,14 +17,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install git
-        run: |
-          sudo apt-get install -y git
-          git --version
-          echo "Path is ... $PATH"
-          PATH=$PATH:$(which git)
-          echo "Path is ... $PATH"
-
       - uses: actions/checkout@v4
       - name: Set up Python 3.10
         uses: actions/setup-python@v3
