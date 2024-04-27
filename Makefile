@@ -37,10 +37,10 @@ clean-test: ## remove test and coverage artifacts
 	rm -rf .pytest_cache
 
 test: ## run tests quickly with the default Python
-	poetry run python -m pytest src/tests --cov=src/git_inquisitor --cov-report=term-missing
+	poetry run python -m pytest tests --cov=src/git_inquisitor --cov-report=term-missing
 
 test-debug: ## run tests quickly with the default Python
-	poetry run python -m pytest src/tests src/tests --pdb
+	poetry run python -m pytest tests --pdb
 
 release: clean ## package and upload a release
 	poetry publish --build

@@ -11,7 +11,7 @@ from git_inquisitor.report import ReportAdapter
 
 class TestGitDataCollector(unittest.TestCase):
     def setUp(self):
-        self.repo_path = Path(__file__).parent.parent.parent
+        self.repo_path = Path(__file__).parent.parent
         self.collector = GitDataCollector(self.repo_path)
 
     def test_init(self):
@@ -80,10 +80,11 @@ class TestGitDataCollector(unittest.TestCase):
         commit.stats.files = {"file1": 2, "file2": 3}
 
         # Call the method
+        self.collector.data["history"] = []
         self.collector._collect_commit_history(commit)
 
         # Check the result
-        self.assertEqual(len(self.collector.data["history"]), 6)
+        self.assertEqual(len(self.collector.data["history"]), 1)
         self.assertEqual(self.collector.data["history"][0]["commit"], "123456")
         self.assertEqual(self.collector.data["history"][0]["parents"], [])
         self.assertEqual(self.collector.data["history"][0]["tree"], "abcdef")
