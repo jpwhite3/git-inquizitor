@@ -16,13 +16,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    container:
-      image: alpine:latest
-
-    defaults:
-      run:
-        shell: bash --noprofile --norc -exo pipefail {0}
-
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python 3.10
