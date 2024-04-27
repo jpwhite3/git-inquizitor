@@ -30,3 +30,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 git-inquisitor = "git_inquisitor.__main__:inquisitor"
 
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
