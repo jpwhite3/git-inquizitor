@@ -49,4 +49,4 @@ dist: clean ## builds source and wheel package
 	poetry build
 
 bootstrap: ## install development dependencies
-	poetry install --no-root
+	poetry install
