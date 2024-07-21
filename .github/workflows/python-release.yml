@@ -3,14 +3,11 @@ name: Python release
 on:
   push:
     tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.[0-9]+'
     paths-ignore:
       - 'README.md'
       - 'CONTRIBUTING.md'
       - 'CODE_OF_CONDUCT.md'
-
-env:
-  PACKAGE_VERSION: '0.1.0'
 
 jobs:
   build:
