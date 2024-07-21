@@ -18,7 +18,7 @@ A git repository analysis tool designed to provide teams with useful information
 It is recommended to use [pipx](https://github.com/pypa/pipx) for installation. This will put the tool on your path so it can be used from anywhere.
 
 ```
-pipx instal git-inquisitor
+pipx install git-inquisitor
 ```
 
 ### Manual Install (Mac/Linux)
