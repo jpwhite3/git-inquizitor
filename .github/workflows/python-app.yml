@@ -5,9 +5,23 @@ name: Python application
 
 on:
   push:
-    branches: ['main']
-  pull_request:
-    branches: ['main']
+    branches:
+      - develop
+      - main
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+    paths-ignore:
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'CODE_OF_CONDUCT.md'
+  pull_request_target:
+    types:
+      - closed
+    branches:
+      - main
+
+env:
+  PACKAGE_VERSION: '0.1.0'
 
 permissions:
   contents: read
@@ -23,18 +37,21 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
+        id: deps
         run: |
           python -m pip install --upgrade pip
           pip install poetry flake8
           make bootstrap
 
       - name: Lint with flake8
+        id: lint
         run: |
           # stop the build if there are Python syntax errors or undefined names
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
@@ -42,10 +59,32 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
       - name: Test with pytest
+        id: test
         run: |
           make test
 
-      - name: Build and publish to pypi
+  publish:
+    needs: [build]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Create Release
+        id: release
+        run: gh release create ${GITHUB_REF#refs/*/} -t ${GITHUB_REF#refs/*/} --generate-notes
+
+      - name: Upload Artifact to Release
+        id: upload
+        run: 'gh release upload ${GITHUB_REF#refs/*/} dist/git_inquisitor-$PACKAGE_VERSION-py3-none-any.whl --clobber'
+
+      - name: Publish to pypi
+        id: publish
         uses: JRubics/poetry-publish@v2.0
         with:
           pypi_token: ${{ secrets.PYPI_TOKEN }}
