@@ -1,0 +1,59 @@
+name: Python release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+    paths-ignore:
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'CODE_OF_CONDUCT.md'
+
+env:
+  PACKAGE_VERSION: '0.1.0'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        id: deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry flake8
+          make bootstrap
+
+      - name: Build and Test
+        id: test
+        run: |
+          make test
+          make dist
+
+      - name: Create Release
+        id: release
+        run: gh release create ${GITHUB_REF#refs/*/} -t ${GITHUB_REF#refs/*/} --generate-notes
+
+      - name: Upload Artifact to Release
+        id: upload
+        run: 'gh release upload ${GITHUB_REF#refs/*/} dist/git_inquisitor-${GITHUB_REF#refs/*/}-py3-none-any.whl dist/git_inquisitor-${GITHUB_REF#refs/*/}.tar.gz --clobber'
+
+      - name: Publish to pypi
+        id: publish
+        uses: JRubics/poetry-publish@v2.0
+        with:
+          pypi_token: ${{ secrets.PYPI_TOKEN }}
+          build_format: 'wheel'
+          poetry_publish_options: '--dry-run'
+          poetry_install_options: '--without dev'
+          repository_name: 'git-inquisitor'
+          repository_url: 'https://test.pypi.org/legacy/'
