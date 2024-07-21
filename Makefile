@@ -50,3 +50,6 @@ dist: clean ## builds source and wheel package
 
 bootstrap: ## install development dependencies
 	poetry install
+
+lint: ## lint all python files with flake8 and black
+	poetry run flake8 ./src --count --select=E9,F63,F7,F82 --max-complexity=10 --max-line-length=127 --show-source --statistics
