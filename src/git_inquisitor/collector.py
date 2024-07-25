@@ -1,14 +1,16 @@
-import sys
-import platform
-from pathlib import Path
-from tqdm import tqdm
-from git import Repo, Commit
-from datetime import datetime
 import getpass
-from .report import JsonReportAdapter, ReportAdapter
-from . import __version__
 import pickle
+import platform
+import sys
 import zipfile
+from datetime import datetime
+from pathlib import Path
+
+from git import Commit, Repo
+from tqdm import tqdm
+
+from . import __version__
+from .report import JsonReportAdapter, ReportAdapter
 
 
 class GitDataCollector:
@@ -33,7 +35,8 @@ class GitDataCollector:
                 },
                 "repo": {
                     "url": self.repo.remotes.origin.url,
-                    "branch": self.repo.active_branch.name,
+                    "branch": self.repo.active_branch.name
+                    or self.commit.hexsha + " (detached)",
                     "commit": {
                         "sha": self.commit.hexsha,
                         "date": self.commit.committed_datetime,
@@ -151,9 +154,11 @@ class GitDataCollector:
             "original_author": current_contributor,
             "total_commits": total_commits,
             "total_lines": total_lines,
-            "top_contributor": f"{top_contributor} ({lines_by_contributor.get(top_contributor, 0)/total_lines:.2%})"
-            if total_lines
-            else None,
+            "top_contributor": (
+                f"{top_contributor} ({lines_by_contributor.get(top_contributor, 0)/total_lines:.2%})"
+                if total_lines
+                else None
+            ),
             "lines_by_contributor": lines_by_contributor,
         }
 
