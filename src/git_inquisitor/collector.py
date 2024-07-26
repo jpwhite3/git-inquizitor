@@ -35,8 +35,7 @@ class GitDataCollector:
                 },
                 "repo": {
                     "url": self.repo.remotes.origin.url,
-                    "branch": self.repo.active_branch.name
-                    or self.commit.hexsha + " (detached)",
+                    "branch": self._get_ref_name(self.repo, self.commit),
                     "commit": {
                         "sha": self.commit.hexsha,
                         "date": self.commit.committed_datetime,
@@ -52,6 +51,12 @@ class GitDataCollector:
         }
         self._collect()
         self.report_adapter = report_adapter(self.data)
+
+    def _get_ref_name(self, repo, commit):
+        try:
+            return repo.active_branch.name
+        except TypeError:
+            return commit.hexsha
 
     def _collect(self) -> None:
         if self.cache_exists():
