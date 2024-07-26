@@ -55,7 +55,7 @@ jobs:
         with:
           pypi_token: ${{ secrets.PYPI_TOKEN }}
           build_format: 'wheel'
-          poetry_publish_options: '--dry-run'
+          # poetry_publish_options: '--dry-run'
           poetry_install_options: '--without dev'
-          repository_name: 'git-inquisitor'
-          repository_url: 'https://test.pypi.org/legacy/'
+          # repository_name: 'git-inquisitor'
+          # repository_url: 'https://test.pypi.org/legacy/'

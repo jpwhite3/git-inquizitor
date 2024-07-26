@@ -23,8 +23,10 @@ pipx install git-inquisitor
 
 ### Manual Install (Mac/Linux)
 
+It is highly recommended you install this within a virtual environment (venv). The instructions below assume you already have created and activated a venv, and are installing the package within.
+
 ```
-python -m pip install git-inquisitor
+python3 -m pip install git-inquisitor
 ```
 
 ## Usage
@@ -61,7 +63,3 @@ Options:
   -o, --output-file-path TEXT  Output file path
   --help                       Show this message and exit.
 ```
-
-## Contributing
-
-Guidelines for contributing to the project and how to submit pull requests.
