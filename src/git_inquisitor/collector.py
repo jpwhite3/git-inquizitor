@@ -54,7 +54,7 @@ class GitDataCollector:
 
     def _get_ref_name(self, repo, commit):
         try:
-            return repo.active_branch.name
+            return repo.active_branch.name + " (detached)"
         except TypeError:
             return commit.hexsha
 
