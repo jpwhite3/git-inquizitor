@@ -42,10 +42,13 @@ test: ## run tests quickly with the default Python
 test-debug: ## run tests quickly with the default Python
 	poetry run python -m pytest tests --pdb
 
-release: clean ## package and upload a release
+version:
+	poetry run python bump_version.py
+
+release: clean version ## package and upload a release
 	poetry publish --build
 
-dist: clean ## builds source and wheel package
+dist: clean version ## builds source and wheel package
 	poetry build
 
 bootstrap: ## install development dependencies
