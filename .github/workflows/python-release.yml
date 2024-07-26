@@ -45,7 +45,7 @@ jobs:
       - name: Upload Artifact to Release
         id: upload
         working-directory: ./dist
-        run: gh release upload $(date +'%Y.%-m.%-d') git_inquisitor-$(date +'%Y.%-m.%-d')-py3-none-any.whl git_inquisitor-$(date +'%Y.%-m.%-d').tar.gz --clobber
+        run: gh release upload $(date +'%Y.%-m.%-d') git_inquisitor-$(date +'%Y.%-m.%-d')-py3-none-any.whl --clobber
         env:
           GH_TOKEN: ${{ github.token }}
 
