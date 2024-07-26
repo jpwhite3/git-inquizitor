@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "git-inquisitor"
-version = "2024.07.26"
+version = "2024.7.26"
 description = "Git Inquizitor is an analysis and reporting tool for git repositories."
 authors = [ "JP White <jpwhite3@gmail.com>",]
 license = "MIT"

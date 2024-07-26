@@ -1,3 +1,4 @@
+.ONESHELL:
 .PHONY: clean clean-test clean-pyc clean-build docs help
 .DEFAULT_GOAL := help
 
@@ -42,10 +43,10 @@ test: ## run tests quickly with the default Python
 test-debug: ## run tests quickly with the default Python
 	poetry run python -m pytest tests --pdb
 
-version:
+version: ## bump version of package
 	poetry run python bump_version.py
 
-release: clean version ## package and upload a release
+publish: clean version ## package and upload a release
 	poetry publish --build
 
 dist: clean version ## builds source and wheel package
@@ -56,3 +57,13 @@ bootstrap: ## install development dependencies
 
 lint: ## lint all python files with flake8 and black
 	poetry run flake8 ./src --count --select=E9,F63,F7,F82 --max-complexity=10 --max-line-length=127 --show-source --statistics
+
+release: dist ## create github release and upload artifacts
+	gh release create $(date +'%Y.%-m.%-d') -t $(date +'%Y.%-m.%-d') --generate-notes --verify-tag
+	gh release upload $(date +'%Y.%-m.%-d') git_inquisitor-$(date +'%Y.%-m.%-d')-py3-none-any.whl git_inquisitor-$(date +'%Y.%-m.%-d').tar.gz --clobber
+
+tag:
+	git tag -d $(date +'%Y.%-m.%-d') 
+	git push origin :refs/tags/$(date +'%Y.%-m.%-d')
+	git tag -f $(date +'%Y.%-m.%-d')
+	git push --tags

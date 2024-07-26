@@ -10,7 +10,7 @@ def generate_date_version_string(timezone="UTC"):
     # Get the current date and time in the specified timezone
     current_date = datetime.now(tz)
     # Format the date as YYYY.MM.DD
-    version_string = current_date.strftime("%Y.%m.%d")
+    version_string = current_date.strftime("%Y.%-m.%-d")
     return version_string
 
 

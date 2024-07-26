@@ -38,14 +38,14 @@ jobs:
 
       - name: Create Release
         id: release
-        run: gh release create $(date +'%Y.%m.%d') -t $(date +'%Y.%m.%d') --generate-notes --verify-tag
+        run: make release
         env:
           GH_TOKEN: ${{ github.token }}
 
       - name: Upload Artifact to Release
         id: upload
         working-directory: ./dist
-        run: gh release upload $(date +'%Y.%m.%d') git_inquisitor-$(date +'%Y.%m.%d')-py3-none-any.whl git_inquisitor-$(date +'%Y.%m.%d').tar.gz --clobber
+        run: gh release upload $(date +'%Y.%-m.%-d') git_inquisitor-$(date +'%Y.%-m.%-d')-py3-none-any.whl git_inquisitor-$(date +'%Y.%-m.%-d').tar.gz --clobber
         env:
           GH_TOKEN: ${{ github.token }}
 
