@@ -38,7 +38,7 @@ jobs:
 
       - name: Create Release
         id: release
-        run: make release
+        run: gh release create $(date +'%Y.%-m.%-d') -t $(date +'%Y.%-m.%-d') --generate-notes --verify-tag
         env:
           GH_TOKEN: ${{ github.token }}
 

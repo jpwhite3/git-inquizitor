@@ -63,7 +63,7 @@ release: dist ## create github release and upload artifacts
 	gh release upload $(date +'%Y.%-m.%-d') git_inquisitor-$(date +'%Y.%-m.%-d')-py3-none-any.whl git_inquisitor-$(date +'%Y.%-m.%-d').tar.gz --clobber
 
 tag:
-	git tag -d $(date +'%Y.%-m.%-d') 
-	git push origin :refs/tags/$(date +'%Y.%-m.%-d')
+	- git tag -d "$(date +'%Y.%-m.%-d')"
+	- git push origin ":refs/tags/$(date +'%Y.%-m.%-d')"
 	git tag -f $(date +'%Y.%-m.%-d')
 	git push --tags
